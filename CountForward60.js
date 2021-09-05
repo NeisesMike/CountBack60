@@ -1,6 +1,7 @@
 const DayType = 
 {
   Normal: "Normal",
+  Summer: "Summer",
   Weekend: "Weekend",
   EC12: "EC12",
   EC5: "EC5",
@@ -9,7 +10,7 @@ const DayType =
   DistrictClosed: "DistrictClosed"
 }
 
-function Go60Back(input)
+function Go60Forward(input, isEC5)
 {
     // The value of `month` must be incremented,
     // because it ranges in (0,11)
@@ -24,7 +25,7 @@ function Go60Back(input)
     {
       return "Date Not Found (possibly formatted incorrectly)";
     }
-    let iterator = startIndex - 1;
+    let iterator = startIndex + 1;
 
     let fuel = 60;
     while(0 < fuel)
@@ -34,23 +35,18 @@ function Go60Back(input)
         iterator = 365;
       }
       let thisDayType = GetDayType(iterator);
-      if(ShouldWeSkipThisDay(iterator))
+      if(ShouldWeSkipThisDay(iterator, isEC5))
       {
-        iterator--;
+        iterator++;
         continue;
       }
       else
       {
-        iterator--;
+        iterator++;
         fuel--;
       }
     }
-
-
-
     return GetDateString(iterator);
-
-
 }
 
 function GetDayType(index)
@@ -76,7 +72,7 @@ function FindStartDay(dateString)
   return "not found";
 }
 
-function ShouldWeSkipThisDay(index)
+function ShouldWeSkipThisDay(index, isEC5)
 {    
   switch(GetDayType(index))
   {
@@ -87,7 +83,7 @@ function ShouldWeSkipThisDay(index)
     case DayType.EC12:
       return true;
     case DayType.EC5:
-      return true;
+      return isEC5;
     case DayType.TeacherReadiness:
       return true;
     case DayType.FederalHoliday:
@@ -433,7 +429,7 @@ var calendar =
   332:{"5/28/2022":DayType.Weekend},
   333:{"5/29/2022":DayType.Weekend},
   334:{"5/30/2022":DayType.DistrictClosed},
-  335:{"5/31/2022":DayType.Normal},
+  335:{"5/31/2022":DayType.Weekend},
   336:{"6/1/2022":DayType.Normal},
   337:{"6/2/2022":DayType.Normal},
   338:{"6/3/2022":DayType.Normal},
