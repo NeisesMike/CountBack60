@@ -38,7 +38,7 @@ function DayTypeStringToEnum(input : string) : DayType
         return null;
   }
 }
-function entry(input : any[], date : any, isEC5 : boolean) : string
+function entry(input : any[], date : any, isEC5 : boolean) : string | MyError
 {
   var out = Go60Forward(ReadCalendar(input), String(date), isEC5);
   return out;
@@ -74,7 +74,14 @@ function DoWeCountThisDay(day : DayType, isEC5 : boolean)
       return false;
   }
 }
-function Go60Forward(calendar : Array<CalendarDateType>, inputDate : string, isEC5 : boolean) : string
+class MyError
+{
+  msg : string;
+  constructor(message: string) {
+    this.msg = message;
+  }
+}
+function Go60Forward(calendar : Array<CalendarDateType>, inputDate : string, isEC5 : boolean) : string | MyError
 {
   let todayIndex : number = 0;
   for(let i=0; i<calendar.length; i++)
@@ -85,10 +92,18 @@ function Go60Forward(calendar : Array<CalendarDateType>, inputDate : string, isE
       break;
     }
   }
+  if(todayIndex == 0 && calendar[0].date != inputDate)
+  {
+    return(new MyError("Date Not Found. That date doesn't appear in any calendar.\n"));
+  }
   let iterator : number = todayIndex+1;
   let fuel : number = 60;
   while(0 < fuel)
   {
+    if(calendar.length <= iterator)
+    {
+      return(new MyError("Unable to count 60 days. Calendar might be corrupted. Verify calendar integrity.\n"));
+    }
     if(DoWeCountThisDay(calendar[iterator].type, isEC5))
     {
       fuel--;
