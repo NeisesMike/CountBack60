@@ -40,8 +40,7 @@ function DayTypeStringToEnum(input : string) : DayType
 }
 function entry(input : any[], date : any, isEC5 : boolean) : string | MyError
 {
-  var out = Go60Forward(ReadCalendar(input), String(date), isEC5);
-  return out;
+  return Go60Forward(ReadCalendar(input), String(date), isEC5);
 }
 function ReadCalendar(calendar : any[]) : Array<CalendarDateType>
 {
